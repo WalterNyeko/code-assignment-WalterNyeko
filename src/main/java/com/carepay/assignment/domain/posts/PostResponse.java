@@ -10,6 +10,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PostResponse {
-    private List<PostInfo> results;
-    private PostPaginationInfo page;
+    private List<PostInfo> content;
+    private PostPaginationInfo paginationInfo;
 }
