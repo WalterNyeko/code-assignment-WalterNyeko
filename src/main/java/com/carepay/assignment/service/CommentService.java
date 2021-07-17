@@ -10,5 +10,5 @@ public interface CommentService {
     CommentDetails postComment(@Valid CommentRequest commentRequest, long postId);
     Page<CommentDetails> getComments(Pageable pageable, long postId);
     CommentDetails getComment(long postId, long commentId);
-    void deleteComment(Long commentId);
+    void deleteComment(long postId, long commentId);
 }

@@ -1,12 +1,10 @@
 package com.carepay.assignment.helpers;
 
-import com.carepay.assignment.domain.comments.Comment;
 import com.carepay.assignment.domain.comments.CommentInfo;
 import com.carepay.assignment.domain.posts.*;
 import org.springframework.data.domain.Page;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class PostMappers {
 

@@ -141,6 +141,39 @@ public class SpringBootExceptions extends ResponseEntityExceptionHandler {
         return returnError(ex.getMessage(), APIConstants.GENERIC_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler({ PostAlreadyExistsException.class })
+    protected ResponseEntity<Object> handlePostAlreadyExistsException(PostAlreadyExistsException ex) {
+        return returnValidationError(ex.getMessage(), APIConstants.PROVIDE_UNIQUE_VALUE, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({ PostNotFoundException.class })
+    protected ResponseEntity<Object> handlePostNotFoundException(PostNotFoundException ex) {
+        return returnValidationError(ex.getMessage(), APIConstants.POST_NOT_FOUND_REASON, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({ CommentNotFoundException.class })
+    protected ResponseEntity<Object> handleCommentNotFoundException(CommentNotFoundException ex) {
+        return returnValidationError(ex.getMessage(), APIConstants.COMMENT_NOT_FOUND_REASON, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({ InvalidCommentException.class })
+    protected ResponseEntity<Object> handleInvalidCommentException(InvalidCommentException ex) {
+        return returnValidationError(ex.getMessage(), APIConstants.PROVIDE_VALID_COMMENT, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({ InvalidBlogPostException.class })
+    protected ResponseEntity<Object> handleInvalidBlogPostException(InvalidBlogPostException ex) {
+        return returnValidationError(ex.getMessage(), APIConstants.PROVIDE_VALID_POST, HttpStatus.BAD_REQUEST);
+    }
+
+    private ResponseEntity<Object> returnValidationError(String message, String provideValidPost, HttpStatus badRequest) {
+        return new ResponseEntity<>(
+                ErrorMappers.mapErrors(
+                        message,
+                        provideValidPost),
+                badRequest);
+    }
+
     private ResponseEntity<Object> returnError(String message, String genericError, HttpStatus httpStatus) {
         return new ResponseEntity<>(
                 ErrorMappers
@@ -148,51 +181,5 @@ public class SpringBootExceptions extends ResponseEntityExceptionHandler {
                                 message,
                                 genericError),
                 new HttpHeaders(), httpStatus);
-    }
-
-
-    @ExceptionHandler({ PostAlreadyExistsException.class })
-    protected ResponseEntity<Object> handlePostAlreadyExistsException(PostAlreadyExistsException ex) {
-        return new ResponseEntity<>(
-                ErrorMappers.mapErrors(
-                ex.getMessage(),
-                APIConstants.PROVIDE_UNIQUE_VALUE),
-                HttpStatus.CONFLICT);
-    }
-
-    @ExceptionHandler({ PostNotFoundException.class })
-    protected ResponseEntity<Object> handlePostNotFoundException(PostNotFoundException ex) {
-        return new ResponseEntity<>(
-                ErrorMappers.mapErrors(
-                        ex.getMessage(),
-                        APIConstants.POST_NOT_FOUND_REASON),
-                HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({ CommentNotFoundException.class })
-    protected ResponseEntity<Object> handleCommentNotFoundException(CommentNotFoundException ex) {
-        return new ResponseEntity<>(
-                ErrorMappers.mapErrors(
-                        ex.getMessage(),
-                        APIConstants.COMMENT_NOT_FOUND_REASON),
-                HttpStatus.NOT_FOUND);
-    }
-
-    @ExceptionHandler({ InvalidCommentException.class })
-    protected ResponseEntity<Object> handleInvalidCommentException(InvalidCommentException ex) {
-        return new ResponseEntity<>(
-                ErrorMappers.mapErrors(
-                        ex.getMessage(),
-                        APIConstants.PROVIDE_VALID_COMMENT),
-                HttpStatus.BAD_REQUEST);
-    }
-
-    @ExceptionHandler({ InvalidBlogPostException.class })
-    protected ResponseEntity<Object> handleInvalidBlogPostException(InvalidBlogPostException ex) {
-        return new ResponseEntity<>(
-                ErrorMappers.mapErrors(
-                        ex.getMessage(),
-                        APIConstants.PROVIDE_VALID_POST),
-                HttpStatus.BAD_REQUEST);
     }
 }

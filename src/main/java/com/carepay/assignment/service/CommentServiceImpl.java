@@ -4,7 +4,6 @@ import com.carepay.assignment.domain.comments.Comment;
 import com.carepay.assignment.domain.comments.CommentDetails;
 import com.carepay.assignment.domain.comments.CommentRequest;
 import com.carepay.assignment.domain.posts.Post;
-import com.carepay.assignment.domain.posts.PostInfo;
 import com.carepay.assignment.exceptions.CommentNotFoundException;
 import com.carepay.assignment.exceptions.PostNotFoundException;
 import com.carepay.assignment.helpers.APIConstants;
@@ -12,12 +11,10 @@ import com.carepay.assignment.repository.CommentRepository;
 import com.carepay.assignment.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
@@ -95,15 +92,19 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public void deleteComment(Long commentId) {
-        Optional<Comment> commentOptional = commentRepository.findById(commentId);
-        if (commentOptional.isPresent()) {
-            try {
-                commentRepository.deleteById(commentId);
-                return;
-            }catch (Exception e) {
-                throw new IllegalArgumentException(e.getCause().getCause());
+    public void deleteComment(long postId, long commentId) {
+        Optional<Post> postOptional = postRepository.findById(postId);
+        if (!postOptional.isPresent())
+            throw new PostNotFoundException(APIConstants.POST_NOT_FOUND);
+        List<Comment> comments = commentRepository.findCommentByPost(postOptional.get());
+        if (!comments.isEmpty()) {
+            for (Comment comment : comments) {
+                if (comment.getId() == commentId) {
+                    commentRepository.deleteById(commentId);
+                    return;
+                }
             }
+            throw new CommentNotFoundException(APIConstants.COMMENT_NOT_FOUND);
         }
         throw new CommentNotFoundException(APIConstants.COMMENT_NOT_FOUND);
     }

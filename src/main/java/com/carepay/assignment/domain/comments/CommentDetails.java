@@ -11,5 +11,4 @@ public class CommentDetails {
     private long commentId;
     private long postId;
     private String comment;
-
 }

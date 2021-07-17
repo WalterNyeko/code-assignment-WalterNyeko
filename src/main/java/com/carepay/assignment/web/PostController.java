@@ -1,18 +1,16 @@
 package com.carepay.assignment.web;
 
 import javax.validation.Valid;
-
-import com.carepay.assignment.domain.comments.CommentDetails;
 import com.carepay.assignment.domain.posts.CreatePostRequest;
 import com.carepay.assignment.domain.posts.PostDetails;
 import com.carepay.assignment.domain.posts.PostInfo;
 import com.carepay.assignment.exceptions.InvalidBlogPostException;
 import com.carepay.assignment.exceptions.PostNotFoundException;
 import com.carepay.assignment.helpers.APIConstants;
-import com.carepay.assignment.helpers.ErrorMappers;
 import com.carepay.assignment.helpers.PostMappers;
 import com.carepay.assignment.service.PostService;
 import com.carepay.assignment.service.PostServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -20,18 +18,25 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.Optional;
 
 @RestController
 @RequestMapping(path = "/posts", produces = MediaType.APPLICATION_JSON_VALUE)
 public class PostController {
-    private final PostService postService;
+    @Autowired
+    PostService postService;
 
     public PostController(PostServiceImpl postService) {
         this.postService = postService;
     }
 
+    /**
+     * Retrieve Paginated List of Posts
+     * @param page the currently showing page number
+     * @param pageSize the number of posts showing on the current page
+     * @param sortBy the field that is used for sorting the posts
+     * @return
+     */
     @GetMapping
     public ResponseEntity<Object> getPosts(@RequestParam Optional<Integer> page,
                                    @RequestParam Optional<Integer> pageSize,
@@ -45,6 +50,11 @@ public class PostController {
         return new ResponseEntity<>(PostMappers.mapPosts(postResults), HttpStatus.OK);
     }
 
+    /**
+     * Creates a new Blog Post
+     * @param createPostRequest
+     * @return PostDetails of the created post
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     PostDetails createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
@@ -55,6 +65,11 @@ public class PostController {
         return postService.createPost(createPostRequest);
     }
 
+    /**
+     * Retrieves a single blog post using its ID
+     * @param id the ID that is used to identify which post to retrieve
+     * @return PostDetails of the retrieved post
+     */
     @GetMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     PostDetails getPostDetails(@PathVariable("id") final Long id) {
@@ -65,6 +80,10 @@ public class PostController {
         throw new PostNotFoundException(APIConstants.POST_NOT_FOUND);
     }
 
+    /**
+     * Deletes an existing blog post using its ID
+     * @param id the ID of the blog post which should be deleted
+     */
     @DeleteMapping("{id}")
     @ResponseStatus(HttpStatus.OK)
     void deletePost(@PathVariable("id") final Long id) {
