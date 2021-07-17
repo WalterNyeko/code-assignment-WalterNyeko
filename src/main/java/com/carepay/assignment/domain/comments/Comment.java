@@ -5,8 +5,11 @@ import com.carepay.assignment.helpers.APIConstants;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
+import javax.validation.constraints.Size;
 
 @Entity
 @Data
@@ -19,8 +22,9 @@ public class Comment {
 
     private String comment;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = APIConstants.COMMENT_JOIN_COLUMN_NAME,
             referencedColumnName = APIConstants.POST_ID)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Post post;
 }

@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PostPaginationInfo {
+public class PaginationInfo {
     private int pageNumber;
     private int pageSize;
     private long totalPages;

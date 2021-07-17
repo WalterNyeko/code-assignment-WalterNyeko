@@ -2,10 +2,14 @@ package com.carepay.assignment.web;
 
 import javax.validation.Valid;
 
+import com.carepay.assignment.domain.comments.CommentDetails;
 import com.carepay.assignment.domain.posts.CreatePostRequest;
 import com.carepay.assignment.domain.posts.PostDetails;
 import com.carepay.assignment.domain.posts.PostInfo;
+import com.carepay.assignment.exceptions.InvalidBlogPostException;
+import com.carepay.assignment.exceptions.PostNotFoundException;
 import com.carepay.assignment.helpers.APIConstants;
+import com.carepay.assignment.helpers.ErrorMappers;
 import com.carepay.assignment.helpers.PostMappers;
 import com.carepay.assignment.service.PostService;
 import com.carepay.assignment.service.PostServiceImpl;
@@ -44,12 +48,21 @@ public class PostController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     PostDetails createPost(@Valid @RequestBody CreatePostRequest createPostRequest) {
+        if (createPostRequest == null ||
+                createPostRequest.getTitle() == null ||
+                createPostRequest.getContent() == null)
+            throw new InvalidBlogPostException(APIConstants.INVALID_POST);
         return postService.createPost(createPostRequest);
     }
 
     @GetMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     PostDetails getPostDetails(@PathVariable("id") final Long id) {
-        return postService.getPostDetails(id);
+        PostDetails postDetails = postService.getPostDetails(id);
+        if (postDetails.getId() != null) {
+            return postDetails;
+        }
+        throw new PostNotFoundException(APIConstants.POST_NOT_FOUND);
     }
 
     @DeleteMapping("{id}")
@@ -57,4 +70,5 @@ public class PostController {
     void deletePost(@PathVariable("id") final Long id) {
         postService.deletePost(id);
     }
+
 }

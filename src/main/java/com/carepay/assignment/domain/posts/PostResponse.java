@@ -11,5 +11,5 @@ import java.util.List;
 @NoArgsConstructor
 public class PostResponse {
     private List<PostInfo> content;
-    private PostPaginationInfo paginationInfo;
+    private PaginationInfo paginationInfo;
 }

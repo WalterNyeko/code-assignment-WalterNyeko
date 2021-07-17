@@ -42,7 +42,7 @@ public class CommentControllerTest extends IntegrationTest {
                         .content("{\"comment\":\"my comment\"}")
         )
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id", greaterThan(0)));
+                .andExpect(jsonPath("$.commentId", greaterThan(0)));
     }
 
     @Test
@@ -50,7 +50,13 @@ public class CommentControllerTest extends IntegrationTest {
         mvc.perform(
                 post("/posts/{postId}/comments", 1)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"comment\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}")
+                        .content("{\"comment\":\"xxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+                                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+                                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+                                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+                                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+                                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" +
+                                "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\"}")
         )
                 .andExpect(status().isBadRequest());
     }
